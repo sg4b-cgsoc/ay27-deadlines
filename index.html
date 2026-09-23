@@ -1,0 +1,251 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#063d73" />
+  <title>SG4B CGSOC AY27 Deadlines</title>
+  <style>
+    :root{
+      --navy:#063d73; --navy2:#0b4f8f; --ink:#10213d; --muted:#58708d;
+      --bg:#eef5fb; --line:#d7e5f2; --L100:#ef476f; --H100:#1686ef;
+      --X100:#f0ad00; --F100:#ff6818; --C:#6b42d9; --S100:#16a557;
+      --W100:#11a4ad; --shadow:0 8px 26px rgba(13,56,99,.11);
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+      color:var(--ink);
+      background:radial-gradient(circle at 10% 0%,rgba(20,123,209,.08),transparent 30%),
+                 linear-gradient(180deg,#f8fbfe 0%,var(--bg) 100%);
+    }
+    .page{max-width:1500px;margin:0 auto;padding:16px}
+    header{
+      background:linear-gradient(135deg,#063463,#07508d);
+      color:#fff;border-radius:22px;padding:22px 28px 18px;box-shadow:var(--shadow);
+      display:grid;grid-template-columns:1fr auto 1fr;gap:18px;align-items:center;
+    }
+    .side-note{font-weight:800;line-height:1.25;color:#8ee7ff;font-size:clamp(14px,1.4vw,22px)}
+    .side-note.right{text-align:right}
+    .title{text-align:center}
+    h1{margin:0;font-size:clamp(34px,5.4vw,78px);line-height:.95;letter-spacing:-.04em}
+    h1 span{color:#ffd231}
+    .subtitle{margin-top:10px;font-size:clamp(13px,1.25vw,20px);font-weight:700;opacity:.95}
+    .todaybar{
+      margin:14px 0 16px;background:#fff;border:1px solid var(--line);border-radius:16px;
+      padding:10px 16px;display:flex;justify-content:space-between;align-items:center;gap:12px;
+      box-shadow:0 5px 18px rgba(13,56,99,.06);font-weight:800;
+    }
+    .todaybar .date{color:var(--navy2)}
+    .todaybar .hint{color:var(--muted);font-weight:700;font-size:14px}
+    .months{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;align-items:start}
+    .month{
+      background:rgba(255,255,255,.9);border:1px solid var(--line);border-radius:20px;
+      overflow:hidden;box-shadow:var(--shadow);min-height:100%;
+    }
+    .month h2{margin:0;color:#fff;text-align:center;font-size:clamp(28px,3vw,46px);letter-spacing:.02em;padding:8px 12px 10px}
+    .month[data-month="10"] h2{background:linear-gradient(90deg,#ff6a00,#ff842f)}
+    .month[data-month="11"] h2{background:linear-gradient(90deg,#ed294a,#f04463)}
+    .month[data-month="12"] h2{background:linear-gradient(90deg,#0c6dc3,#1988df)}
+    .cards{padding:10px;display:grid;gap:8px}
+    .card{
+      position:relative;display:grid;grid-template-columns:88px minmax(0,1fr) auto;
+      gap:14px;align-items:center;border:1px solid rgba(16,33,61,.07);border-radius:15px;
+      padding:10px 12px;background:#fff;transition:.2s ease;
+    }
+    .card:hover{transform:translateY(-1px);box-shadow:0 6px 18px rgba(13,56,99,.08)}
+    .card.next{outline:3px solid #ffd231;outline-offset:1px}
+    .card.done{opacity:.5;filter:saturate(.65)}
+    .card.done .task-title{text-decoration:line-through}
+    .datebox{text-align:center;border-right:1px solid rgba(16,33,61,.1);padding-right:10px}
+    .day{font-size:38px;line-height:.9;font-weight:950;letter-spacing:-.04em}
+    .mon{font-size:16px;font-weight:950;margin-top:5px}
+    .task-main{min-width:0}
+    .topline{display:flex;align-items:center;gap:10px;min-width:0}
+    .course{color:#fff;font-weight:900;border-radius:10px;padding:5px 10px;line-height:1;white-space:nowrap}
+    .task-title{font-size:clamp(17px,1.45vw,23px);font-weight:900;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .countline{margin-top:8px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+    .label{font-size:13px;font-weight:800;color:var(--muted)}
+    .days{min-width:88px;text-align:center;padding:6px 10px;border-radius:9px;font-weight:950;background:#fff;border:2px solid currentColor;color:var(--navy2)}
+    .days.today{background:#fff3bf;color:#7a5600}
+    .days.overdue{background:#ffe4e7;color:#a31f35}
+    .done-wrap{display:flex;align-items:center;gap:7px;font-weight:900;white-space:nowrap}
+    .done-wrap input{width:24px;height:24px;accent-color:var(--navy2);cursor:pointer}
+    .L100{background:linear-gradient(90deg,rgba(239,71,111,.08),rgba(239,71,111,.03))}
+    .H100{background:linear-gradient(90deg,rgba(22,134,239,.08),rgba(22,134,239,.03))}
+    .X100{background:linear-gradient(90deg,rgba(240,173,0,.10),rgba(240,173,0,.03))}
+    .F100{background:linear-gradient(90deg,rgba(255,104,24,.09),rgba(255,104,24,.03))}
+    .Cseries{background:linear-gradient(90deg,rgba(107,66,217,.09),rgba(107,66,217,.03))}
+    .S100{background:linear-gradient(90deg,rgba(22,165,87,.09),rgba(22,165,87,.03))}
+    .W100{background:linear-gradient(90deg,rgba(17,164,173,.09),rgba(17,164,173,.03))}
+    .course.L100{background:var(--L100)} .course.H100{background:var(--H100)}
+    .course.X100{background:var(--X100)} .course.F100{background:var(--F100)}
+    .course.Cseries{background:var(--C)} .course.S100{background:var(--S100)}
+    .course.W100{background:var(--W100)}
+    .motivation{
+      margin:14px 14px 18px;min-height:160px;display:grid;place-items:center;text-align:center;
+      color:#4c9ce5;font-weight:900;font-size:clamp(24px,2.8vw,44px);line-height:1.1;font-style:italic;
+    }
+    .motivation small{display:block;color:var(--navy2);font-style:normal;font-size:.48em;letter-spacing:.16em;margin-top:14px}
+    .footer{margin-top:14px;background:#fff;border:1px solid var(--line);border-radius:18px;padding:14px;box-shadow:0 5px 18px rgba(13,56,99,.06)}
+    .legend{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+    .legend-title{font-weight:950;background:var(--navy);color:#fff;padding:8px 12px;border-radius:10px}
+    .chip{color:#fff;font-weight:900;border-radius:9px;padding:6px 11px}
+    .instructions{margin-top:12px;color:var(--muted);font-weight:750;font-size:14px}
+    button{appearance:none;border:0;background:#eaf3fb;color:var(--navy2);font-weight:850;padding:8px 12px;border-radius:9px;cursor:pointer;margin-left:auto}
+    @media (max-width:980px){
+      header{grid-template-columns:1fr}.side-note{display:none}
+      .months{grid-template-columns:1fr}.card{grid-template-columns:72px minmax(0,1fr) auto}
+      .day{font-size:32px}.motivation{min-height:100px}
+    }
+    @media (max-width:560px){
+      .page{padding:8px} header{border-radius:16px;padding:18px 14px}
+      .todaybar{align-items:flex-start;flex-direction:column}
+      .card{grid-template-columns:62px minmax(0,1fr);gap:10px}
+      .done-wrap{grid-column:2}.task-title{white-space:normal}.days{min-width:74px}
+    }
+    @media print{
+      body{background:#fff}.page{max-width:none;padding:0}
+      header,.month,.footer,.todaybar{box-shadow:none}button{display:none}
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header>
+      <div class="side-note">Plan.<br>Prepare.<br>Succeed.</div>
+      <div class="title">
+        <h1>CGSOC <span>DEADLINES</span></h1>
+        <div class="subtitle">SG4B · AY27 · Track due dates, countdowns, and completion from October through December.</div>
+      </div>
+      <div class="side-note right">Count Down.<br>Stay Ahead.</div>
+    </header>
+
+    <div class="todaybar">
+      <div>Today: <span class="date" id="today"></span></div>
+      <div class="hint">Days Out updates automatically each day. Completed checks are saved on this device.</div>
+    </div>
+
+    <section class="months" id="months"></section>
+
+    <footer class="footer">
+      <div class="legend">
+        <span class="legend-title">Course Colors</span>
+        <span class="chip" style="background:var(--L100)">L100</span>
+        <span class="chip" style="background:var(--H100)">H100</span>
+        <span class="chip" style="background:var(--X100)">X100</span>
+        <span class="chip" style="background:var(--F100)">F100</span>
+        <span class="chip" style="background:var(--C)">C-series</span>
+        <span class="chip" style="background:var(--S100)">S100</span>
+        <span class="chip" style="background:var(--W100)">W100</span>
+        <button id="reset">Reset Done Checks</button>
+      </div>
+      <div class="instructions">Check an item when it is complete. The countdown is calculated from your device's local date. The nearest upcoming unfinished deadline is outlined in yellow.</div>
+    </footer>
+  </main>
+
+  <script>
+    const deadlines = [
+      {date:"2026-10-05", course:"C300", group:"Cseries", title:"Exam II"},
+      {date:"2026-10-08", course:"L100", group:"L100", title:"Outline"},
+      {date:"2026-10-15", course:"H100", group:"H100", title:"Outline"},
+      {date:"2026-10-23", course:"S100", group:"S100", title:"Quiz #2"},
+      {date:"2026-10-26", course:"F100", group:"F100", title:"Part I"},
+      {date:"2026-10-27", course:"C400", group:"Cseries", title:"Exam"},
+      {date:"2026-10-30", course:"X100", group:"X100", title:"Outline"},
+      {date:"2026-11-10", course:"L100", group:"L100", title:"Essay Due"},
+      {date:"2026-11-12", course:"H100", group:"H100", title:"Essay Due"},
+      {date:"2026-11-13", course:"F100", group:"F100", title:"Part II"},
+      {date:"2026-11-18", course:"C500", group:"Cseries", title:"Exam"},
+      {date:"2026-11-25", course:"W100", group:"W100", title:"Individual Staff Product"},
+      {date:"2026-12-04", course:"X100", group:"X100", title:"Essay"},
+      {date:"2026-12-07", course:"W100", group:"W100", title:"Exam"}
+    ];
+
+    const monthNames={10:"OCTOBER",11:"NOVEMBER",12:"DECEMBER"};
+    const shortMonth={10:"OCT",11:"NOV",12:"DEC"};
+    const storageKey="sg4b-cgsoc-ay27-done-v1";
+
+    function localMidnight(d=new Date()){return new Date(d.getFullYear(),d.getMonth(),d.getDate())}
+    function parseLocalDate(iso){const [y,m,d]=iso.split("-").map(Number);return new Date(y,m-1,d)}
+    function daysBetween(a,b){return Math.round((localMidnight(b)-localMidnight(a))/86400000)}
+    function loadDone(){try{return JSON.parse(localStorage.getItem(storageKey)||"{}")}catch{return {}}}
+    function saveDone(done){localStorage.setItem(storageKey,JSON.stringify(done))}
+    function dateKey(item){return item.date+"|"+item.course+"|"+item.title}
+
+    function render(){
+      const today=localMidnight();
+      document.getElementById("today").textContent=today.toLocaleDateString(undefined,{weekday:"long",month:"long",day:"numeric",year:"numeric"});
+
+      const done=loadDone();
+      const futureUnfinished=deadlines
+        .filter(x=>!done[dateKey(x)]&&daysBetween(today,parseLocalDate(x.date))>=0)
+        .sort((a,b)=>parseLocalDate(a.date)-parseLocalDate(b.date));
+      const nextKey=futureUnfinished[0]?dateKey(futureUnfinished[0]):null;
+
+      const months=document.getElementById("months");
+      months.innerHTML="";
+
+      [10,11,12].forEach(m=>{
+        const section=document.createElement("section");
+        section.className="month";
+        section.dataset.month=m;
+        section.innerHTML=`<h2>${monthNames[m]}</h2><div class="cards"></div>`;
+        const cards=section.querySelector(".cards");
+
+        deadlines.filter(x=>parseLocalDate(x.date).getMonth()+1===m).forEach(item=>{
+          const d=parseLocalDate(item.date);
+          const diff=daysBetween(today,d);
+          const key=dateKey(item);
+          const isDone=!!done[key];
+          let text,cls="";
+          if(isDone){text="DONE"}
+          else if(diff>1){text=diff+" DAYS"}
+          else if(diff===1){text="1 DAY"}
+          else if(diff===0){text="TODAY";cls="today"}
+          else{text=Math.abs(diff)+" DAYS AGO";cls="overdue"}
+
+          const card=document.createElement("article");
+          card.className=`card ${item.group} ${isDone?"done":""} ${key===nextKey?"next":""}`;
+          card.innerHTML=`
+            <div class="datebox"><div class="day">${d.getDate()}</div><div class="mon">${shortMonth[m]}</div></div>
+            <div class="task-main">
+              <div class="topline">
+                <span class="course ${item.group}">${item.course}</span>
+                <span class="task-title">${item.title}</span>
+              </div>
+              <div class="countline"><span class="label">Days Out</span><span class="days ${cls}">${text}</span></div>
+            </div>
+            <label class="done-wrap"><input type="checkbox" ${isDone?"checked":""} aria-label="Mark ${item.course} ${item.title} done"><span>Done</span></label>
+          `;
+          const checkbox=card.querySelector("input");
+          checkbox.addEventListener("change",()=>{
+            const state=loadDone();
+            state[key]=checkbox.checked;
+            if(!checkbox.checked)delete state[key];
+            saveDone(state);render();
+          });
+          cards.appendChild(card);
+        });
+
+        const motivation=document.createElement("div");
+        motivation.className="motivation";
+        motivation.innerHTML=m===10?"Track It.<br>Execute.<br>Finish Strong!"
+          :m===11?"Progress Today.<br>Stronger Tomorrow."
+          :"Same Team.<br>Bigger Wins.<small>FINISH STRONG · CGSOC</small>";
+        section.appendChild(motivation);
+        months.appendChild(section);
+      });
+    }
+
+    document.getElementById("reset").addEventListener("click",()=>{
+      if(confirm("Clear all completed checks on this device?")){
+        localStorage.removeItem(storageKey);render();
+      }
+    });
+
+    render();
+  </script>
+</body>
+</html>
