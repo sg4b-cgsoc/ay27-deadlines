@@ -50,7 +50,7 @@
     .month[data-month="12"] h2{background:linear-gradient(90deg,#0c6dc3,#1988df)}
     .cards{padding:10px;display:grid;gap:8px}
     .card{
-      position:relative;display:grid;grid-template-columns:88px minmax(0,1fr) auto;
+      position:relative;display:grid;grid-template-columns:88px minmax(0,1fr);
       gap:14px;align-items:center;border:1px solid rgba(16,33,61,.07);border-radius:15px;
       padding:10px 12px;background:#fff;transition:.2s ease;
     }
@@ -61,11 +61,12 @@
     .datebox{text-align:center;border-right:1px solid rgba(16,33,61,.1);padding-right:10px}
     .day{font-size:38px;line-height:.9;font-weight:950;letter-spacing:-.04em}
     .mon{font-size:16px;font-weight:950;margin-top:5px}
-    .task-main{min-width:0}
-    .topline{display:flex;align-items:center;gap:10px;min-width:0}
+    /* The title gets the full card width; countdown and Done share the lower row. */
+    .task-main{min-width:0;display:grid;grid-template-columns:minmax(0,1fr) auto;column-gap:10px;row-gap:8px;align-items:center}
+    .topline{grid-column:1 / -1;display:flex;align-items:flex-start;flex-wrap:wrap;gap:10px;min-width:0}
     .course{color:#fff;font-weight:900;border-radius:10px;padding:5px 10px;line-height:1;white-space:nowrap}
-    .task-title{font-size:clamp(17px,1.45vw,23px);font-weight:900;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-    .countline{margin-top:8px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+    .task-title{font-size:clamp(17px,1.45vw,23px);font-weight:900;line-height:1.2;flex:1 1 140px;min-width:0;white-space:normal;overflow-wrap:break-word}
+    .countline{grid-column:1;grid-row:2;display:flex;align-items:center;gap:8px;flex-wrap:wrap;min-width:0}
     .label{font-size:13px;font-weight:800;color:var(--muted)}
     .days{min-width:88px;text-align:center;padding:6px 10px;border-radius:9px;font-weight:950;background:#fff;border:2px solid currentColor;color:var(--navy2)}
     .days.today{background:#fff3bf;color:#7a5600}
@@ -73,7 +74,7 @@
     /* Past dates automatically become muted, even if not checked as done. */
     .card.past{background:#eef1f4;border-color:#d4d9df;color:#697788;filter:grayscale(1);opacity:.74}
     .card.past .days.overdue{background:#e1e6eb;color:#596779}
-    .done-wrap{display:flex;align-items:center;gap:7px;font-weight:900;white-space:nowrap}
+    .done-wrap{grid-column:2;grid-row:2;justify-self:end;display:flex;align-items:center;gap:7px;font-weight:900;white-space:nowrap}
     .done-wrap input{width:24px;height:24px;accent-color:var(--navy2);cursor:pointer}
     .L100{background:linear-gradient(90deg,rgba(239,71,111,.08),rgba(239,71,111,.03))}
     .H100{background:linear-gradient(90deg,rgba(22,134,239,.08),rgba(22,134,239,.03))}
@@ -99,14 +100,14 @@
     button{appearance:none;border:0;background:#eaf3fb;color:var(--navy2);font-weight:850;padding:8px 12px;border-radius:9px;cursor:pointer;margin-left:auto}
     @media (max-width:980px){
       header{grid-template-columns:1fr}.side-note{display:none}
-      .months{grid-template-columns:1fr}.card{grid-template-columns:72px minmax(0,1fr) auto}
+      .months{grid-template-columns:1fr}.card{grid-template-columns:72px minmax(0,1fr)}
       .day{font-size:32px}.motivation{min-height:100px}
     }
     @media (max-width:560px){
       .page{padding:8px} header{border-radius:16px;padding:18px 14px}
       .todaybar{align-items:flex-start;flex-direction:column}
       .card{grid-template-columns:62px minmax(0,1fr);gap:10px}
-      .done-wrap{grid-column:2}.task-title{white-space:normal}.days{min-width:74px}
+      .task-main{column-gap:8px}.topline{gap:7px}.task-title{flex-basis:120px}.days{min-width:74px}
     }
     @media print{
       body{background:#fff}.page{max-width:none;padding:0}
@@ -247,8 +248,8 @@
                 <span class="task-title">${item.title}</span>
               </div>
               <div class="countline"><span class="label">Days Out</span><span class="days ${cls}">${text}</span></div>
+              <label class="done-wrap"><input type="checkbox" ${isDone?"checked":""} aria-label="Mark ${item.course} ${item.title} done"><span>Done</span></label>
             </div>
-            <label class="done-wrap"><input type="checkbox" ${isDone?"checked":""} aria-label="Mark ${item.course} ${item.title} done"><span>Done</span></label>
           `;
           const checkbox=card.querySelector("input");
           checkbox.addEventListener("change",()=>{
