@@ -70,6 +70,9 @@
     .days{min-width:88px;text-align:center;padding:6px 10px;border-radius:9px;font-weight:950;background:#fff;border:2px solid currentColor;color:var(--navy2)}
     .days.today{background:#fff3bf;color:#7a5600}
     .days.overdue{background:#ffe4e7;color:#a31f35}
+    /* Past dates automatically become muted, even if not checked as done. */
+    .card.past{background:#eef1f4;border-color:#d4d9df;color:#697788;filter:grayscale(1);opacity:.74}
+    .card.past .days.overdue{background:#e1e6eb;color:#596779}
     .done-wrap{display:flex;align-items:center;gap:7px;font-weight:900;white-space:nowrap}
     .done-wrap input{width:24px;height:24px;accent-color:var(--navy2);cursor:pointer}
     .L100{background:linear-gradient(90deg,rgba(239,71,111,.08),rgba(239,71,111,.03))}
@@ -141,22 +144,27 @@
         <span class="chip" style="background:var(--W100)">W100</span>
         <button id="reset">Reset Done Checks</button>
       </div>
-      <div class="instructions">Check an item when it is complete. The countdown is calculated from your device's local date. The nearest upcoming unfinished deadline is outlined in yellow.</div>
+      <div class="instructions">Check an item when it is complete. The countdown is calculated from your device's local date. Past dates are shaded gray. The nearest upcoming unfinished deadline is outlined in yellow.</div>
     </footer>
   </main>
 
   <script>
     const deadlines = [
       {date:"2026-10-05", course:"C300", group:"Cseries", title:"Exam II"},
-      {date:"2026-10-08", course:"L100", group:"L100", title:"Outline"},
+      {date:"2026-10-09", course:"L100", group:"L100", title:"Outline"},
+      {date:"2026-10-13", course:"C400", group:"Cseries", title:"Test 1"},
+      {date:"2026-10-15", course:"C400", group:"Cseries", title:"Test 2"},
       {date:"2026-10-15", course:"H100", group:"H100", title:"Outline"},
-      {date:"2026-10-23", course:"S100", group:"S100", title:"Quiz #2"},
-      {date:"2026-10-26", course:"F100", group:"F100", title:"Part I"},
+      {date:"2026-10-26", course:"C400", group:"Cseries", title:"Test 3"},
+      {date:"2026-10-26", course:"F100", group:"F100", title:"Part 1 (Essay)"},
       {date:"2026-10-27", course:"C400", group:"Cseries", title:"Exam"},
       {date:"2026-10-30", course:"X100", group:"X100", title:"Outline"},
+      {date:"2026-11-10", course:"F100T", group:"F100", title:"Comprehensive F100 Test"},
       {date:"2026-11-10", course:"L100", group:"L100", title:"Essay Due"},
+      {date:"2026-11-10", course:"S100", group:"S100", title:"Quiz #2"},
       {date:"2026-11-12", course:"H100", group:"H100", title:"Essay Due"},
-      {date:"2026-11-13", course:"F100", group:"F100", title:"Part II"},
+      {date:"2026-11-15", course:"F100", group:"F100", title:"Part 2 (Essay)"},
+      {date:"2026-11-16", course:"S100", group:"S100", title:"Assessment #3"},
       {date:"2026-11-18", course:"C500", group:"Cseries", title:"Exam"},
       {date:"2026-11-25", course:"W100", group:"W100", title:"Individual Staff Product"},
       {date:"2026-12-04", course:"X100", group:"X100", title:"Essay"},
@@ -170,7 +178,28 @@
     function localMidnight(d=new Date()){return new Date(d.getFullYear(),d.getMonth(),d.getDate())}
     function parseLocalDate(iso){const [y,m,d]=iso.split("-").map(Number);return new Date(y,m-1,d)}
     function daysBetween(a,b){return Math.round((localMidnight(b)-localMidnight(a))/86400000)}
-    function loadDone(){try{return JSON.parse(localStorage.getItem(storageKey)||"{}")}catch{return {}}}
+    function loadDone(){
+      try{
+        const done=JSON.parse(localStorage.getItem(storageKey)||"{}");
+        // Carry forward completion checks when a deadline date or label changes.
+        const legacyKeys={
+          "2026-10-08|L100|Outline":"2026-10-09|L100|Outline",
+          "2026-10-23|S100|Quiz #2":"2026-11-10|S100|Quiz #2",
+          "2026-10-26|F100|Part I":"2026-10-26|F100|Part 1 (Essay)",
+          "2026-11-13|F100|Part II":"2026-11-15|F100|Part 2 (Essay)"
+        };
+        let migrated=false;
+        for(const [oldKey,newKey] of Object.entries(legacyKeys)){
+          if(Object.prototype.hasOwnProperty.call(done,oldKey)){
+            if(done[oldKey])done[newKey]=true;
+            delete done[oldKey];
+            migrated=true;
+          }
+        }
+        if(migrated)saveDone(done);
+        return done;
+      }catch{return {}}
+    }
     function saveDone(done){localStorage.setItem(storageKey,JSON.stringify(done))}
     function dateKey(item){return item.date+"|"+item.course+"|"+item.title}
 
@@ -199,6 +228,7 @@
           const diff=daysBetween(today,d);
           const key=dateKey(item);
           const isDone=!!done[key];
+          const isPast=diff<0;
           let text,cls="";
           if(isDone){text="DONE"}
           else if(diff>1){text=diff+" DAYS"}
@@ -207,7 +237,7 @@
           else{text=Math.abs(diff)+" DAYS AGO";cls="overdue"}
 
           const card=document.createElement("article");
-          card.className=`card ${item.group} ${isDone?"done":""} ${key===nextKey?"next":""}`;
+          card.className=`card ${item.group} ${isDone?"done":""} ${isPast?"past":""} ${key===nextKey?"next":""}`;
           card.innerHTML=`
             <div class="datebox"><div class="day">${d.getDate()}</div><div class="mon">${shortMonth[m]}</div></div>
             <div class="task-main">
