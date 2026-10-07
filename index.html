@@ -157,16 +157,15 @@
       {date:"2026-10-15", course:"H100", group:"H100", title:"Outline"},
       {date:"2026-10-26", course:"C400", group:"Cseries", title:"Test 3"},
       {date:"2026-10-26", course:"F100", group:"F100", title:"Part 1 (Essay)"},
-      {date:"2026-10-27", course:"C400", group:"Cseries", title:"Exam"},
       {date:"2026-10-30", course:"X100", group:"X100", title:"Outline"},
-      {date:"2026-11-10", course:"F100T", group:"F100", title:"Comprehensive F100 Test"},
+      {date:"2026-11-09", course:"F100T", group:"F100", title:"F100 Test Classroom"},
       {date:"2026-11-10", course:"L100", group:"L100", title:"Essay Due"},
       {date:"2026-11-10", course:"S100", group:"S100", title:"Quiz #2"},
       {date:"2026-11-12", course:"H100", group:"H100", title:"Essay Due"},
       {date:"2026-11-15", course:"F100", group:"F100", title:"Part 2 (Essay)"},
       {date:"2026-11-16", course:"S100", group:"S100", title:"Assessment #3"},
       {date:"2026-11-18", course:"C500", group:"Cseries", title:"Exam"},
-      {date:"2026-11-25", course:"W100", group:"W100", title:"Individual Staff Product"},
+      {date:"2026-11-25", course:"W100", group:"W100", title:"ISP Plan"},
       {date:"2026-12-04", course:"X100", group:"X100", title:"Essay"},
       {date:"2026-12-07", course:"W100", group:"W100", title:"Exam"}
     ];
@@ -186,7 +185,9 @@
           "2026-10-08|L100|Outline":"2026-10-09|L100|Outline",
           "2026-10-23|S100|Quiz #2":"2026-11-10|S100|Quiz #2",
           "2026-10-26|F100|Part I":"2026-10-26|F100|Part 1 (Essay)",
-          "2026-11-13|F100|Part II":"2026-11-15|F100|Part 2 (Essay)"
+          "2026-11-13|F100|Part II":"2026-11-15|F100|Part 2 (Essay)",
+          "2026-11-10|F100T|Comprehensive F100 Test":"2026-11-09|F100T|F100 Test Classroom",
+          "2026-11-25|W100|Individual Staff Product":"2026-11-25|W100|ISP Plan"
         };
         let migrated=false;
         for(const [oldKey,newKey] of Object.entries(legacyKeys)){
